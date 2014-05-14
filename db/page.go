@@ -1,22 +1,19 @@
 package db
 
-import "github.com/russross/blackfriday"
-
-var (
-	// ErrPageNotFound is returned when a page does not exist.
-	ErrPageNotFound = &Error{"page not found", nil}
-)
-
 type Page struct {
 	Tx   *Tx
-	Name string
+	Name []byte
 	Text []byte
 }
 
+func (p *Page) bucket() []byte {
+	return []byte("pages")
+}
+
 func (p *Page) get() ([]byte, error) {
-	text := p.Tx.Bucket([]byte("pages")).Get([]byte(p.Name))
+	text := p.Tx.Bucket(p.bucket()).Get(p.Name)
 	if text == nil {
-		return nil, ErrPageNotFound
+		return nil, &Error{"page not found", nil}
 	}
 	return text, nil
 }
@@ -35,24 +32,6 @@ func (p *Page) Load() error {
 
 // Save commits the Page to the database.
 func (p *Page) Save() error {
-	assert(p.Name != "", "uninitialized page cannot be saved")
-	return p.Tx.Bucket([]byte("pages")).Put([]byte(p.Name), p.Text)
+	assert(len(p.Name) != 0, "uninitialized page cannot be saved")
+	return p.Tx.Bucket(p.bucket()).Put(p.Name, p.Text)
 }
-
-func (p *Page) TextString(text string) {
-	p.Text = []byte(text)
-}
-
-func (p *Page) ParsedText() []byte {
-	return blackfriday.MarkdownCommon([]byte(p.Text))
-}
-
-func (p *Page) ParsedTextString() string {
-	return string(p.ParsedText())
-}
-
-type Pages []*Page
-
-func (p Pages) Len() int           { return len(p) }
-func (p Pages) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
-func (p Pages) Less(i, j int) bool { return p[i].Name < p[j].Name }

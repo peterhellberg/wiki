@@ -9,7 +9,7 @@ type Tx struct {
 }
 
 // Page retrieves a Page from the database with the given name.
-func (tx *Tx) Page(name string) (*Page, error) {
+func (tx *Tx) Page(name []byte) (*Page, error) {
 	p := &Page{Tx: tx, Name: name}
 	return p, p.Load()
 }

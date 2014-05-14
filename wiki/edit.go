@@ -17,7 +17,7 @@ func (w *Wiki) Edit(c web.C, rw http.ResponseWriter, r *http.Request) {
 		t, err := template.New("edit").Parse(editTpl)
 
 		template.Must(t, err).Execute(rw, map[string]string{
-			"Path": "/" + p.Name,
+			"Path": "/" + string(p.Name),
 			"Text": string(p.Text),
 		})
 

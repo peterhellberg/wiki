@@ -28,5 +28,11 @@ func (w *Wiki) Update(c web.C, rw http.ResponseWriter, r *http.Request) {
 		return p.Save()
 	})
 
-	http.Redirect(rw, r, "/"+name, 302)
+	path := "/" + string(name)
+
+	if path == "/root" {
+		path = "/"
+	}
+
+	http.Redirect(rw, r, path, 302)
 }

@@ -18,10 +18,10 @@ func (w *Wiki) DB() *db.DB {
 	return w.db
 }
 
-func (w *Wiki) getPageName(name string) string {
+func (w *Wiki) getPageName(name string) []byte {
 	if name == "" {
-		return "root"
+		return []byte("root")
 	}
 
-	return name
+	return []byte(name)
 }

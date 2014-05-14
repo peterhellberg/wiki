@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/peterhellberg/wiki/db"
+	"github.com/russross/blackfriday"
 	"github.com/zenazn/goji/web"
 )
 
@@ -15,12 +16,12 @@ func (w *Wiki) Show(c web.C, rw http.ResponseWriter, r *http.Request) {
 		p, err := tx.Page(name)
 
 		if err != nil {
-			p.TextString(emptyPageString)
+			p.Text = []byte(emptyPageString)
 		}
 
 		vars := map[string]interface{}{
-			"Path": "/" + p.Name + "/edit",
-			"Text": BytesAsHTML(p.ParsedText()),
+			"Path": "/" + string(p.Name) + "/edit",
+			"Text": BytesAsHTML(ParsedMarkdown(p.Text)),
 		}
 
 		t := template.Must(template.New("show").Parse(showTpl))
@@ -36,4 +37,8 @@ func (w *Wiki) RedirectToShow(c web.C, rw http.ResponseWriter, r *http.Request) 
 
 func BytesAsHTML(b []byte) template.HTML {
 	return template.HTML(string(b))
+}
+
+func ParsedMarkdown(b []byte) []byte {
+	return blackfriday.MarkdownCommon(b)
 }

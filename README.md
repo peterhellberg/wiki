@@ -3,6 +3,8 @@ Wiki
 
 A tiny wiki using [Goji](http://goji.io/), [BoltDB](https://github.com/boltdb/bolt) and [Blackfriday](https://github.com/russross/blackfriday).
 
+[![Build Status](https://travis-ci.org/peterhellberg/wiki.svg?branch=master)](https://travis-ci.org/peterhellberg/wiki)
+
 ### Installation
 
 ```bash

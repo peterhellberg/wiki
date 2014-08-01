@@ -5,6 +5,8 @@ go:
 
 install:
   - go get github.com/zenazn/goji
+  - go get github.com/boltdb/bolt
+  - go get github.com/russross/blackfriday
   - go get -t github.com/smartystreets/goconvey/convey
 
 branches:

@@ -15,7 +15,7 @@ type DB struct {
 // Open initializes and opens the database.
 func (db *DB) Open(path string, mode os.FileMode) error {
 	var err error
-	db.DB, err = bolt.Open(path, mode)
+	db.DB, err = bolt.Open(path, mode, nil)
 	if err != nil {
 		return err
 	}

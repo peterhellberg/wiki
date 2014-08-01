@@ -1,0 +1,12 @@
+language: go
+
+go:
+  - 1.3
+
+install:
+  - go get github.com/zenazn/goji
+  - go get -t github.com/smartystreets/goconvey/convey
+
+branches:
+  only:
+    - master

@@ -3,9 +3,10 @@ package wiki
 import (
 	"net/http"
 
-	"github.com/peterhellberg/wiki/db"
 	"github.com/goji/param"
 	"github.com/zenazn/goji/web"
+
+	"github.com/peterhellberg/wiki/db"
 )
 
 type formData struct {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/peterhellberg/wiki/db"
-	"github.com/zenazn/goji/param"
+	"github.com/goji/param"
 	"github.com/zenazn/goji/web"
 )
 

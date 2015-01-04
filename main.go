@@ -1,3 +1,18 @@
+// Copyright 2014-2015 Peter Hellberg.
+// Released under the terms of the MIT license.
+
+// wiki is a tiny wiki using Goji, BoltDB and Blackfriday.
+//
+// Installation
+//
+//     go get -u github.com/peterhellberg/wiki
+//
+// Usage
+//
+// You can specify two (optional) parameters -bind and -db
+//
+//     wiki -bind=":7272" -db="/tmp/foo.db"
+//
 package main
 
 import (

@@ -5,6 +5,8 @@
 //
 // Installation
 //
+// You can install wiki with go get:
+//
 //     go get -u github.com/peterhellberg/wiki
 //
 // Usage

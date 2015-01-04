@@ -1,5 +1,6 @@
 package db
 
+// Page represents a Wiki page
 type Page struct {
 	Tx   *Tx
 	Name []byte

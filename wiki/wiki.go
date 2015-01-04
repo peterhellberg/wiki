@@ -2,10 +2,12 @@ package wiki
 
 import "github.com/peterhellberg/wiki/db"
 
+// Wiki represents the entire Wiki, contains the db
 type Wiki struct {
 	db *db.DB
 }
 
+// NewWiki creates a new Wiki
 func NewWiki(db *db.DB) (*Wiki, error) {
 	// Setup the wiki.
 	w := &Wiki{db: db}

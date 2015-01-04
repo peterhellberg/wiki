@@ -8,6 +8,7 @@ import (
 	"github.com/zenazn/goji/web"
 )
 
+// Edit is the edit endpoint of the Wiki
 func (w *Wiki) Edit(c web.C, rw http.ResponseWriter, r *http.Request) {
 	name := w.getPageName(c.URLParams["name"])
 

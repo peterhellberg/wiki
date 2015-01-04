@@ -4,6 +4,7 @@ import (
 	"github.com/boltdb/bolt"
 )
 
+// Tx represents a BoltDB transaction
 type Tx struct {
 	*bolt.Tx
 }

@@ -13,6 +13,7 @@ type formData struct {
 	Text string `param:"text"`
 }
 
+// Update is the update endpoint of the Wiki
 func (w *Wiki) Update(c web.C, rw http.ResponseWriter, r *http.Request) {
 	name := w.getPageName(c.URLParams["name"])
 

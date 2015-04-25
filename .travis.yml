@@ -2,6 +2,8 @@ language: go
 
 go: 1.4.2
 
+sudo: false
+
 install:
   - go get github.com/zenazn/goji
   - go get github.com/goji/param

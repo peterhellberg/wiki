@@ -3,9 +3,9 @@ package wiki
 import (
 	"testing"
 
-	"github.com/peterhellberg/wiki/db"
-
 	. "github.com/smartystreets/goconvey/convey"
+
+	"github.com/peterhellberg/wiki/db"
 )
 
 func TestWiki(t *testing.T) {

@@ -4,9 +4,10 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/peterhellberg/wiki/db"
 	"github.com/russross/blackfriday"
 	"github.com/zenazn/goji/web"
+
+	"github.com/peterhellberg/wiki/db"
 )
 
 // Show is the show endpoint of the Wiki

@@ -4,8 +4,9 @@ import (
 	"net/http"
 	"text/template"
 
-	"github.com/peterhellberg/wiki/db"
 	"github.com/zenazn/goji/web"
+
+	"github.com/peterhellberg/wiki/db"
 )
 
 // Edit is the edit endpoint of the Wiki

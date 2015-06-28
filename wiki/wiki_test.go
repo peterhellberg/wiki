@@ -1,32 +1,38 @@
 package wiki
 
 import (
+	"bytes"
 	"testing"
-
-	. "github.com/smartystreets/goconvey/convey"
 
 	"github.com/peterhellberg/wiki/db"
 )
 
-func TestWiki(t *testing.T) {
-	Convey("Wiki", t, func() {
-		Convey("NewWiki", func() {
-			db := &db.DB{}
+func TestNewWiki(t *testing.T) {
+	db := &db.DB{}
 
-			w, err := NewWiki(db)
+	w, err := NewWiki(db)
+	if err != nil {
+		t.Fatal(err)
+	}
 
-			So(err, ShouldBeNil)
-			So(w.DB(), ShouldEqual, db)
-		})
+	if w.DB() != db {
+		t.Errorf(`unexpected db`)
+	}
+}
 
-		Convey("getPageName", func() {
-			w := &Wiki{}
+func TestGetPageName(t *testing.T) {
+	w := &Wiki{}
 
-			// Default page name as a slice of bytes
-			So(w.getPageName(""), ShouldResemble, []byte("root"))
-
-			// Return page name as a slice of bytes
-			So(w.getPageName("foo"), ShouldResemble, []byte("foo"))
-		})
-	})
+	for _, tt := range []struct {
+		page string
+		want []byte
+	}{
+		{"", []byte("root")},
+		{"foo", []byte("foo")},
+		{"bar", []byte("bar")},
+	} {
+		if got := w.getPageName(tt.page); !bytes.Equal(got, tt.want) {
+			t.Errorf("unexpected page name %q, want %q", got, tt.want)
+		}
+	}
 }

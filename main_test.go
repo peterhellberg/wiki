@@ -2,19 +2,16 @@ package main
 
 import (
 	"os/exec"
+	"strings"
 	"testing"
-
-	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestWikiCommand(t *testing.T) {
-	Convey("wiki", t, func() {
-		Convey("--help outputs the command line options", func() {
-			out, _ := execGo("run", "main.go", "--help")
+func TestUsageInstructions(t *testing.T) {
+	out, _ := execGo("run", "main.go", "--help")
 
-			So(out, ShouldContainSubstring, "Path to the BoltDB file")
-		})
-	})
+	if !strings.Contains(out, "Path to the BoltDB file") {
+		t.Fatalf(`unexpected output`)
+	}
 }
 
 func execGo(args ...string) (string, error) {

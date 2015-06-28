@@ -3,22 +3,14 @@ package db
 import (
 	"errors"
 	"testing"
-
-	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestError(t *testing.T) {
-	Convey("Error", t, func() {
-		Convey("with cause", func() {
-			e := &Error{message: "Foo", cause: errors.New("Bar")}
+	if e := (&Error{"Foo", errors.New("Bar")}); e.Error() != "Foo: Bar" {
+		t.Errorf(`unexpected error %q`, e)
+	}
 
-			So(e.Error(), ShouldEqual, "Foo: Bar")
-		})
-
-		Convey("without cause", func() {
-			e := &Error{message: "Baz"}
-
-			So(e.Error(), ShouldEqual, "Baz")
-		})
-	})
+	if e := (&Error{message: "Baz"}); e.Error() != "Baz" {
+		t.Errorf(`unexpected error %q`, e)
+	}
 }

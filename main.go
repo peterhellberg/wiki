@@ -26,6 +26,8 @@ import (
 
 	"github.com/peterhellberg/wiki/db"
 	"github.com/peterhellberg/wiki/wiki"
+	
+	"regexp"
 )
 
 var dbFile = flag.String("db", "/tmp/wiki.db", "Path to the BoltDB file")
@@ -51,12 +53,17 @@ func main() {
 		goji.Abandon(middleware.Logger)
 	}
 
+	 pageName := regexp.MustCompile(`^/(?P<name>[A-Za-z0-9_\-/]+)$`)
+    	suffixSlash := regexp.MustCompile(`^/(?P<name>[A-Za-z0-9_\-/]+)/$`)
+    	pageEdit := regexp.MustCompile(`^/(?P<name>[A-Za-z0-9_\-/]+)(?:/edit)$`)
+
 	// Setup up the routes for the wiki
-	goji.Get("/", w.Show)
-	goji.Get("/:name", w.Show)
-	goji.Get("/:name/", w.RedirectToShow)
-	goji.Get("/:name/edit", w.Edit)
-	goji.Post("/:name", w.Update)
+	
+    	goji.Get(suffixSlash, w.RedirectToShow)
+    	goji.Get(pageEdit, w.Edit)
+	goji.Get(pageName, w.Show)
+    	goji.Get("/", w.Show)
+	goji.Post(pageName, w.Update)
 
 	// Start the web server
 	goji.Serve()

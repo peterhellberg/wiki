@@ -1,5 +1,11 @@
 package db
 
+// Errors
+var (
+	ErrPageNotFound = &Error{"page not found", nil}
+	ErrNoPageName   = &Error{"no page name", nil}
+)
+
 // Page represents a Wiki page
 type Page struct {
 	Tx   *Tx
@@ -14,8 +20,9 @@ func (p *Page) bucket() []byte {
 func (p *Page) get() ([]byte, error) {
 	text := p.Tx.Bucket(p.bucket()).Get(p.Name)
 	if text == nil {
-		return nil, &Error{"page not found", nil}
+		return nil, ErrPageNotFound
 	}
+
 	return text, nil
 }
 
@@ -33,6 +40,9 @@ func (p *Page) Load() error {
 
 // Save commits the Page to the database.
 func (p *Page) Save() error {
-	assert(len(p.Name) != 0, "uninitialized page cannot be saved")
+	if len(p.Name) == 0 {
+		return ErrNoPageName
+	}
+
 	return p.Tx.Bucket(p.bucket()).Put(p.Name, p.Text)
 }

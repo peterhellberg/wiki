@@ -1,7 +1,6 @@
 package db
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/boltdb/bolt"
@@ -15,6 +14,7 @@ type DB struct {
 // Open initializes and opens the database.
 func (db *DB) Open(path string, mode os.FileMode) error {
 	var err error
+
 	db.DB, err = bolt.Open(path, mode, nil)
 	if err != nil {
 		return err
@@ -22,14 +22,16 @@ func (db *DB) Open(path string, mode os.FileMode) error {
 
 	// Create buckets.
 	err = db.Update(func(tx *Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte("pages"))
-		assert(err == nil, "pages bucket error: %s", err)
+		if _, err := tx.CreateBucketIfNotExists([]byte("pages")); err != nil {
+			return &Error{"pages bucket error", err}
+		}
 
 		return nil
 	})
 
 	if err != nil {
 		db.Close()
+
 		return err
 	}
 
@@ -48,11 +50,4 @@ func (db *DB) Update(fn func(*Tx) error) error {
 	return db.DB.Update(func(tx *bolt.Tx) error {
 		return fn(&Tx{tx})
 	})
-}
-
-// assert will panic with a given formatted message if the given condition is false.
-func assert(condition bool, msg string, v ...interface{}) {
-	if !condition {
-		panic(fmt.Sprintf("assert failed: "+msg, v...))
-	}
 }

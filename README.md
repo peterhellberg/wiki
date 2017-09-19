@@ -1,9 +1,10 @@
 Wiki
 ====
 
-A tiny wiki using [Goji](http://goji.io/), [BoltDB](https://github.com/boltdb/bolt) and [Blackfriday](https://github.com/russross/blackfriday).
+A tiny wiki using [BoltDB](https://github.com/boltdb/bolt) and [Blackfriday](https://github.com/russross/blackfriday).
 
 [![Build Status](https://travis-ci.org/peterhellberg/wiki.svg?branch=master)](https://travis-ci.org/peterhellberg/wiki)
+[![Go Report Card](https://goreportcard.com/badge/github.com/peterhellberg/wiki)](https://goreportcard.com/report/github.com/peterhellberg/wiki)
 [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/peterhellberg/wiki)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/peterhellberg/wiki#license-mit)
 
@@ -15,15 +16,13 @@ go get -u github.com/peterhellberg/wiki
 
 ## Usage
 
-You can specify two (optional) parameters `-bind` and `-db`
-
 ```bash
-wiki -bind=":7272" -db="/tmp/foo.db"
+PORT=2017 wiki -db="/tmp/foo.db"
 ```
 
 ## License (MIT)
 
-Copyright (c) 2014-2015 [Peter Hellberg](http://c7.se/)
+Copyright (c) 2014-2017 [Peter Hellberg](https://c7.se/)
 
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the

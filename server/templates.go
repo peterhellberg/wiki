@@ -176,7 +176,7 @@ const stylesheet = `
 		border: 1px solid #dddfe1;
 		border-radius: 6px;
 		padding: 0.5rem;
-		min-height: 10em;
+		min-height: 1em;
 		overflow: auto;
 		white-space: pre;
 		font-size: 0.8rem;

@@ -8,6 +8,8 @@ A tiny wiki using [BoltDB](https://github.com/boltdb/bolt) and [Blackfriday](htt
 [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/peterhellberg/wiki)
 [![License MIT](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat)](https://github.com/peterhellberg/wiki#license-mit)
 
+![wiki](https://assets.c7.se/screenshots/wiki-20170920-015158.png)
+
 ## Installation
 
 ```bash

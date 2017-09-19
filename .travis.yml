@@ -1,15 +1,12 @@
 language: go
 
-go: 1.4.2
+go: 1.9
 
 sudo: false
 
-install:
-  - go get github.com/zenazn/goji
-  - go get github.com/goji/param
-  - go get github.com/boltdb/bolt
-  - go get github.com/russross/blackfriday
-  - go get -t github.com/smartystreets/goconvey/convey
+script:
+  - go vet ./...
+  - go test ./...
 
 branches:
   only:

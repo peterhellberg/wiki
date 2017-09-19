@@ -1,4 +1,4 @@
-Blackfriday [![Build Status](https://travis-ci.org/russross/blackfriday.svg?branch=master)](https://travis-ci.org/russross/blackfriday)
+Blackfriday [![Build Status](https://travis-ci.org/russross/blackfriday.svg?branch=master)](https://travis-ci.org/russross/blackfriday) [![GoDoc](https://godoc.org/github.com/russross/blackfriday?status.svg)](https://godoc.org/github.com/russross/blackfriday)
 ===========
 
 Blackfriday is a [Markdown][1] processor implemented in [Go][2]. It
@@ -8,7 +8,7 @@ punctuation substitutions, etc.), and it is safe for all utf-8
 (unicode) input.
 
 HTML output is currently supported, along with Smartypants
-extensions.
+extensions. An experimental LaTeX output engine is also included.
 
 It started as a translation from C of [Sundown][3].
 
@@ -16,87 +16,63 @@ It started as a translation from C of [Sundown][3].
 Installation
 ------------
 
-Blackfriday is compatible with any modern Go release. With Go 1.7 and git
-installed:
+Blackfriday is compatible with Go 1. If you are using an older
+release of Go, consider using v1.1 of blackfriday, which was based
+on the last stable release of Go prior to Go 1. You can find it as a
+tagged commit on github.
 
-    go get gopkg.in/russross/blackfriday.v2
+With Go 1 and git installed:
+
+    go get github.com/russross/blackfriday
 
 will download, compile, and install the package into your `$GOPATH`
 directory hierarchy. Alternatively, you can achieve the same if you
 import it into a project:
 
-    import "gopkg.in/russross/blackfriday.v2"
+    import "github.com/russross/blackfriday"
 
 and `go get` without parameters.
-
-
-Versions
---------
-
-Currently maintained and recommended version of Blackfriday is `v2`. It's being
-developed on its own branch: https://github.com/russross/blackfriday/v2. You
-should install and import it via [gopkg.in][6] at
-`gopkg.in/russross/blackfriday.v2`.
-
-Version 2 offers a number of improvements over v1:
-
-* Cleaned up API
-* A separate call to [`Parse`][4], which produces an abstract syntax tree for
-  the document
-* Latest bug fixes
-* Flexibility to easily add your own rendering extensions
-
-Potential drawbacks:
-
-* Our benchmarks show v2 to be slightly slower than v1. Currently in the
-  ballpark of around 15%.
-* API breakage. If you can't afford modifying your code to adhere to the new API
-  and don't care too much about the new features, v2 is probably not for you.
-* Several bug fixes are trailing behind and still need to be forward-ported to
-  v2. See issue [#348](https://github.com/russross/blackfriday/issues/348) for
-  tracking.
 
 Usage
 -----
 
-For the most sensible markdown processing, it is as simple as getting your input
-into a byte slice and calling:
+For basic usage, it is as simple as getting your input into a byte
+slice and calling:
 
-```go
-output := blackfriday.Run(input)
-```
+    output := blackfriday.MarkdownBasic(input)
 
-Your input will be parsed and the output rendered with a set of most popular
-extensions enabled. If you want the most basic feature set, corresponding with
-the bare Markdown specification, use:
+This renders it with no extensions enabled. To get a more useful
+feature set, use this instead:
 
-```go
-output := blackfriday.Run(input, blackfriday.WithNoExtensions())
-```
+    output := blackfriday.MarkdownCommon(input)
 
 ### Sanitize untrusted content
 
 Blackfriday itself does nothing to protect against malicious content. If you are
-dealing with user-supplied markdown, we recommend running Blackfriday's output
-through HTML sanitizer such as [Bluemonday][5].
+dealing with user-supplied markdown, we recommend running blackfriday's output
+through HTML sanitizer such as
+[Bluemonday](https://github.com/microcosm-cc/bluemonday).
 
-Here's an example of simple usage of Blackfriday together with Bluemonday:
+Here's an example of simple usage of blackfriday together with bluemonday:
 
-```go
+``` go
 import (
     "github.com/microcosm-cc/bluemonday"
     "github.com/russross/blackfriday"
 )
 
 // ...
-unsafe := blackfriday.Run(input)
+unsafe := blackfriday.MarkdownCommon(input)
 html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 ```
 
 ### Custom options
 
-If you want to customize the set of options, use `blackfriday.WithExtensions`,
-`blackfriday.WithRenderer` and `blackfriday.WithRefOverride`.
+If you want to customize the set of options, first get a renderer
+(currently either the HTML or LaTeX output engines), then use it to
+call the more general `Markdown` function. For examples, see the
+implementations of `MarkdownBasic` and `MarkdownCommon` in
+`markdown.go`.
 
 You can also check out `blackfriday-tool` for a more complete example
 of how to use it. Download and install it using:
@@ -116,6 +92,22 @@ blackfriday in addition to the tool itself. The tool binary will be
 installed in `$GOPATH/bin`.  This is a statically-linked binary that
 can be copied to wherever you need it without worrying about
 dependencies and library versions.
+
+### Sanitized anchor names
+
+Blackfriday includes an algorithm for creating sanitized anchor names
+corresponding to a given input text. This algorithm is used to create
+anchors for headings when `EXTENSION_AUTO_HEADER_IDS` is enabled. The
+algorithm has a specification, so that other packages can create
+compatible anchor names and links to those anchors.
+
+The specification is located at https://godoc.org/github.com/russross/blackfriday#hdr-Sanitized_Anchor_Names.
+
+[`SanitizedAnchorName`](https://godoc.org/github.com/russross/blackfriday#SanitizedAnchorName) exposes this functionality, and can be used to
+create compatible links to the anchor names generated by blackfriday.
+This algorithm is also implemented in a small standalone package at
+[`github.com/shurcooL/sanitized_anchor_name`](https://godoc.org/github.com/shurcooL/sanitized_anchor_name). It can be useful for clients
+that want a small package and don't need full functionality of blackfriday.
 
 
 Features
@@ -184,7 +176,7 @@ implements the following extensions:
     and supply a language (to make syntax highlighting simple). Just
     mark it like this:
 
-        ```go
+        ``` go
         func getTrue() bool {
             return true
         }
@@ -192,6 +184,15 @@ implements the following extensions:
 
     You can use 3 or more backticks to mark the beginning of the
     block, and the same number to mark the end of the block.
+
+    To preserve classes of fenced code blocks while using the bluemonday
+    HTML sanitizer, use the following policy:
+
+    ``` go
+    p := bluemonday.UGCPolicy()
+    p.AllowAttrs("class").Matching(regexp.MustCompile("^language-[a-zA-Z0-9]+$")).OnElements("code")
+    html := p.SanitizeBytes(unsafe)
+    ```
 
 *   **Definition lists**. A simple definition list is made of a single-line
     term followed by a colon and the definition for that term.
@@ -218,8 +219,10 @@ implements the following extensions:
 *   **Strikethrough**. Use two tildes (`~~`) to mark text that
     should be crossed out.
 
-*   **Hard line breaks**. With this extension enabled newlines in the input
-    translate into line breaks in the output. This extension is off by default.
+*   **Hard line breaks**. With this extension enabled (it is off by
+    default in the `MarkdownBasic` and `MarkdownCommon` convenience
+    functions), newlines in the input translate into line breaks in
+    the output.
 
 *   **Smart quotes**. Smartypants-style punctuation substitution is
     supported, turning normal double- and single-quote marks into
@@ -246,7 +249,7 @@ are a few of note:
 
 *   [github_flavored_markdown](https://godoc.org/github.com/shurcooL/github_flavored_markdown):
     provides a GitHub Flavored Markdown renderer with fenced code block
-    highlighting, clickable heading anchor links.
+    highlighting, clickable header anchor links.
 
     It's not customizable, and its goal is to produce HTML output
     equivalent to the [GitHub Markdown API endpoint](https://developer.github.com/v3/markdown/#render-a-markdown-document-in-raw-mode),
@@ -255,8 +258,17 @@ are a few of note:
 *   [markdownfmt](https://github.com/shurcooL/markdownfmt): like gofmt,
     but for markdown.
 
-*   [LaTeX output](https://bitbucket.org/ambrevar/blackfriday-latex):
-    renders output as LaTeX.
+*   LaTeX output: renders output as LaTeX. This is currently part of the
+    main Blackfriday repository, but may be split into its own project
+    in the future. If you are interested in owning and maintaining the
+    LaTeX output component, please be in touch.
+
+    It renders some basic documents, but is only experimental at this
+    point. In particular, it does not do any inline escaping, so input
+    that happens to look like LaTeX code will be passed through without
+    modification.
+    
+*   [Md2Vim](https://github.com/FooSoft/md2vim): transforms markdown files into vimdoc format.
 
 
 Todo
@@ -275,9 +287,6 @@ License
 [Blackfriday is distributed under the Simplified BSD License](LICENSE.txt)
 
 
-   [1]: https://daringfireball.net/projects/markdown/ "Markdown"
-   [2]: https://golang.org/ "Go Language"
+   [1]: http://daringfireball.net/projects/markdown/ "Markdown"
+   [2]: http://golang.org/ "Go Language"
    [3]: https://github.com/vmg/sundown "Sundown"
-   [4]: https://godoc.org/gopkg.in/russross/blackfriday.v2#Parse "Parse func"
-   [5]: https://github.com/microcosm-cc/bluemonday "Bluemonday"
-   [6]: https://labix.org/gopkg.in "gopkg.in"

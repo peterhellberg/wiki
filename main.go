@@ -56,20 +56,6 @@ func main() {
 	if err := hs.ListenAndServe(); err != nil {
 		logger.Fatal(err)
 	}
-
-	//if *loggerEnabled != true {
-	//	goji.Abandon(middleware.Logger)
-	//}
-
-	//// Setup up the routes for the wiki
-	//goji.Get("/", w.Show)
-	//goji.Get("/:name", w.Show)
-	//goji.Get("/:name/", w.RedirectToShow)
-	//goji.Get("/:name/edit", w.Edit)
-	//goji.Post("/:name", w.Update)
-
-	//// Start the web server
-	//goji.Serve()
 }
 
 func newDB(fn string) (*db.DB, error) {
